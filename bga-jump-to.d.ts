@@ -75,7 +75,7 @@ interface JumpToSettings {
      * Set if the controls are folded by default.
      * Default (false) is visible controls
      */
-    defaultFolded: boolean;
+    defaultFolded?: boolean;
 }
 declare class JumpToManager {
     private game;

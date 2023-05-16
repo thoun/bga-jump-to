@@ -73,7 +73,7 @@ interface JumpToSettings {
      * Set if the controls are folded by default.
      * Default (false) is visible controls
      */
-    defaultFolded: boolean;
+    defaultFolded?: boolean;
 }
 
 class JumpToManager {
