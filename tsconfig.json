@@ -1,0 +1,16 @@
+{
+    "rootDir": ".", 
+    "compilerOptions": {
+      "target": "es5",
+      "module": "none",
+      "lib": ["dom", "esnext"],  
+      "sourceMap": false,
+      "outFile": "bga-jump-to.js",
+      "declaration": true,
+    },
+    "files": [
+      "src/framework.d.ts",
+      "src/jump-to-manager.ts",
+      "src/define.ts"
+    ]
+}
