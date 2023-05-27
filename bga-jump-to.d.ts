@@ -53,7 +53,7 @@ interface JumpToSettings {
      */
     topEntries?: JumpToEntry[];
     /**
-     * Players entries, usually one entry by player. If the game as a fake (automata) player, must be added here.
+     * Players entries, usually one entry by player. If the game has a fake (automata) player, it can be added here.
      * Default one entry by player in gamedatas (see JumpToPlayer)
      */
     playersEntries?: JumpToEntry[];
@@ -68,9 +68,16 @@ interface JumpToSettings {
     toggleColor?: string;
     /**
      * Show an eye icon before the label.
-     * The icon can be overriden by setting `--jump-to-eye-url: url("data:image/svg+xml, [...]");` on `#jump-controls`.
+     * The icon can be overriden by setting `--bga-jump-to_eye-url: url("data:image/svg+xml, [...]");` on `#jump-controls`.
+     * Default true.
      */
     showEye?: boolean;
+    /**
+     * Show the player avatar before the label.
+     * If active, takes the value of `entry.data.avatarUrl` as a CSS url (`url('http://...')`) or takes the player icon if not set.
+     * Default true.
+     */
+    showAvatar?: boolean;
     /**
      * Set if the controls are folded by default.
      * Default (false) is visible controls

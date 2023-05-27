@@ -46,29 +46,50 @@ var JumpToManager = /** @class */ (function () {
                 folded = localStorageValue == 'true';
             }
         }
-        document.getElementById('bga-jump-to-controls').classList.toggle('folded', folded);
+        document.getElementById('bga-jump-to_controls').classList.toggle('folded', folded);
     }
     JumpToManager.prototype.createPlayerJumps = function (entries) {
         var _this = this;
         var _a, _b, _c, _d;
-        document.getElementById("game_play_area_wrap").insertAdjacentHTML('afterend', "\n        <div id=\"bga-jump-to-controls\">        \n            <div id=\"bga-jump-to-toggle\" class=\"bga-jump-to-link ".concat((_b = (_a = this.settings) === null || _a === void 0 ? void 0 : _a.entryClasses) !== null && _b !== void 0 ? _b : '', " toggle\" style=\"--color: ").concat((_d = (_c = this.settings) === null || _c === void 0 ? void 0 : _c.toggleColor) !== null && _d !== void 0 ? _d : 'black', "\">\n                \u21D4\n            </div>\n        </div>"));
-        document.getElementById("bga-jump-to-toggle").addEventListener('click', function () { return _this.jumpToggle(); });
+        document.getElementById("game_play_area_wrap").insertAdjacentHTML('afterend', "\n        <div id=\"bga-jump-to_controls\">        \n            <div id=\"bga-jump-to_toggle\" class=\"bga-jump-to_link ".concat((_b = (_a = this.settings) === null || _a === void 0 ? void 0 : _a.entryClasses) !== null && _b !== void 0 ? _b : '', " toggle\" style=\"--color: ").concat((_d = (_c = this.settings) === null || _c === void 0 ? void 0 : _c.toggleColor) !== null && _d !== void 0 ? _d : 'black', "\">\n                \u21D4\n            </div>\n        </div>"));
+        document.getElementById("bga-jump-to_toggle").addEventListener('click', function () { return _this.jumpToggle(); });
         entries.forEach(function (entry) {
-            var _a, _b, _c, _d, _e;
-            document.getElementById("bga-jump-to-controls").insertAdjacentHTML('beforeend', "<div id=\"bga-jump-to-".concat(entry.targetId, "\" class=\"bga-jump-to-link ").concat((_b = (_a = _this.settings) === null || _a === void 0 ? void 0 : _a.entryClasses) !== null && _b !== void 0 ? _b : '', "\">\n                    ").concat(((_d = (_c = _this.settings) === null || _c === void 0 ? void 0 : _c.showEye) !== null && _d !== void 0 ? _d : true) ? "<div class=\"eye\"></div>" : "", "\n                    <span class=\"bga-jump-to-label\">").concat(entry.label, "</span>\n                </div>"));
-            var entryDiv = document.getElementById("bga-jump-to-".concat(entry.targetId));
-            Object.getOwnPropertyNames((_e = entry.data) !== null && _e !== void 0 ? _e : []).forEach(function (key) {
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+            var html = "<div id=\"bga-jump-to_".concat(entry.targetId, "\" class=\"bga-jump-to_link ").concat((_b = (_a = _this.settings) === null || _a === void 0 ? void 0 : _a.entryClasses) !== null && _b !== void 0 ? _b : '', "\">");
+            if ((_d = (_c = _this.settings) === null || _c === void 0 ? void 0 : _c.showEye) !== null && _d !== void 0 ? _d : true) {
+                html += "<div class=\"eye\"></div>";
+            }
+            if (((_f = (_e = _this.settings) === null || _e === void 0 ? void 0 : _e.showAvatar) !== null && _f !== void 0 ? _f : true) && ((_g = entry.data) === null || _g === void 0 ? void 0 : _g.id)) {
+                var cssUrl = (_h = entry.data) === null || _h === void 0 ? void 0 : _h.avatarUrl;
+                if (!cssUrl) {
+                    var img = document.getElementById("avatar_".concat(entry.data.id));
+                    var url = img === null || img === void 0 ? void 0 : img.src;
+                    // ? Custom image : Bga Image
+                    //url = url.replace('_32', url.indexOf('data/avatar/defaults') > 0 ? '' : '_184');
+                    if (url) {
+                        cssUrl = "url('".concat(url, "')");
+                    }
+                }
+                if (cssUrl) {
+                    html += "<div class=\"bga-jump-to_avatar\" style=\"--avatar-url: ".concat(cssUrl, ";\"></div>");
+                }
+            }
+            html += "\n                <span class=\"bga-jump-to_label\">".concat(entry.label, "</span>\n            </div>");
+            //
+            document.getElementById("bga-jump-to_controls").insertAdjacentHTML('beforeend', html);
+            var entryDiv = document.getElementById("bga-jump-to_".concat(entry.targetId));
+            Object.getOwnPropertyNames((_j = entry.data) !== null && _j !== void 0 ? _j : []).forEach(function (key) {
                 entryDiv.dataset[key] = entry.data[key];
                 entryDiv.style.setProperty("--".concat(key), entry.data[key]);
             });
             entryDiv.addEventListener('click', function () { return _this.jumpTo(entry.targetId); });
         });
-        var jumpDiv = document.getElementById("bga-jump-to-controls");
+        var jumpDiv = document.getElementById("bga-jump-to_controls");
         jumpDiv.style.marginTop = "-".concat(Math.round(jumpDiv.getBoundingClientRect().height / 2), "px");
     };
     JumpToManager.prototype.jumpToggle = function () {
         var _a;
-        var jumpControls = document.getElementById('bga-jump-to-controls');
+        var jumpControls = document.getElementById('bga-jump-to_controls');
         jumpControls.classList.toggle('folded');
         if ((_a = this.settings) === null || _a === void 0 ? void 0 : _a.localStorageFoldedKey) {
             localStorage.setItem(this.settings.localStorageFoldedKey, jumpControls.classList.contains('folded').toString());
@@ -89,6 +110,7 @@ var JumpToManager = /** @class */ (function () {
         return orderedPlayers.map(function (player) { return new JumpToEntry(player.name, "player-table-".concat(player.id), {
             'color': '#' + player.color,
             'colorback': player.color_back ? '#' + player.color_back : null,
+            'id': player.id,
         }); });
     };
     return JumpToManager;

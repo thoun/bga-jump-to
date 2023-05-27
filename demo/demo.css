@@ -21,3 +21,8 @@ body {
 .player-table span {
     color: var(--color);
 }
+
+#avatar_1001 {
+    width: 32px;
+    height: 32px;
+}

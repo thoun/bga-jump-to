@@ -47,7 +47,7 @@ interface JumpToSettings {
     topEntries?: JumpToEntry[];
 
     /**
-     * Players entries, usually one entry by player. If the game as a fake (automata) player, must be added here.
+     * Players entries, usually one entry by player. If the game has a fake (automata) player, it can be added here.
      * Default one entry by player in gamedatas (see JumpToPlayer)
      */
     playersEntries?: JumpToEntry[];
@@ -65,9 +65,17 @@ interface JumpToSettings {
 
     /**
      * Show an eye icon before the label.
-     * The icon can be overriden by setting `--jump-to-eye-url: url("data:image/svg+xml, [...]");` on `#jump-controls`.
+     * The icon can be overriden by setting `--bga-jump-to_eye-url: url("data:image/svg+xml, [...]");` on `#jump-controls`.
+     * Default true.
      */
     showEye?: boolean;
+
+    /**
+     * Show the player avatar before the label.
+     * If active, takes the value of `entry.data.avatarUrl` as a CSS url (`url('http://...')`) or takes the player icon if not set.
+     * Default true. 
+     */
+    showAvatar?: boolean;
 
     /**
      * Set if the controls are folded by default.
@@ -93,27 +101,45 @@ class JumpToManager {
             }
         }
 
-        document.getElementById('bga-jump-to-controls').classList.toggle('folded', folded);
+        document.getElementById('bga-jump-to_controls').classList.toggle('folded', folded);
     }
     
     private createPlayerJumps(entries: JumpToEntry[]) {
         document.getElementById(`game_play_area_wrap`).insertAdjacentHTML('afterend',
         `
-        <div id="bga-jump-to-controls">        
-            <div id="bga-jump-to-toggle" class="bga-jump-to-link ${this.settings?.entryClasses ?? ''} toggle" style="--color: ${this.settings?.toggleColor ?? 'black'}">
+        <div id="bga-jump-to_controls">        
+            <div id="bga-jump-to_toggle" class="bga-jump-to_link ${this.settings?.entryClasses ?? ''} toggle" style="--color: ${this.settings?.toggleColor ?? 'black'}">
                 ⇔
             </div>
         </div>`);
-        document.getElementById(`bga-jump-to-toggle`).addEventListener('click', () => this.jumpToggle());
+        document.getElementById(`bga-jump-to_toggle`).addEventListener('click', () => this.jumpToggle());
 
         entries.forEach(entry => {
-            document.getElementById(`bga-jump-to-controls`).insertAdjacentHTML('beforeend',
-                `<div id="bga-jump-to-${entry.targetId}" class="bga-jump-to-link ${this.settings?.entryClasses ?? ''}">
-                    ${this.settings?.showEye ?? true ? `<div class="eye"></div>` : ``}
-                    <span class="bga-jump-to-label">${entry.label}</span>
-                </div>`
-            );
-            const entryDiv = document.getElementById(`bga-jump-to-${entry.targetId}`);
+            let html = `<div id="bga-jump-to_${entry.targetId}" class="bga-jump-to_link ${this.settings?.entryClasses ?? ''}">`;
+            if (this.settings?.showEye ?? true) {
+                html += `<div class="eye"></div>`;
+            }
+            if ((this.settings?.showAvatar ?? true) && entry.data?.id) {
+                let cssUrl = entry.data?.avatarUrl;
+                if (!cssUrl) {
+                    const img = document.getElementById(`avatar_${entry.data.id}`) as HTMLImageElement;
+                    const url = img?.src;
+                    // ? Custom image : Bga Image
+                    //url = url.replace('_32', url.indexOf('data/avatar/defaults') > 0 ? '' : '_184');
+                    if (url) {
+                        cssUrl = `url('${url}')`;
+                    }
+                }
+                if (cssUrl) {
+                    html += `<div class="bga-jump-to_avatar" style="--avatar-url: ${cssUrl};"></div>`;
+                }
+            }
+            html += `
+                <span class="bga-jump-to_label">${entry.label}</span>
+            </div>`;
+            //
+            document.getElementById(`bga-jump-to_controls`).insertAdjacentHTML('beforeend', html);
+            const entryDiv = document.getElementById(`bga-jump-to_${entry.targetId}`);
             Object.getOwnPropertyNames(entry.data ?? []).forEach(key => {
                 entryDiv.dataset[key] = entry.data[key];
                 entryDiv.style.setProperty(`--${key}`, entry.data[key]);
@@ -121,12 +147,12 @@ class JumpToManager {
             entryDiv.addEventListener('click', () => this.jumpTo(entry.targetId));	
         });
 
-        const jumpDiv = document.getElementById(`bga-jump-to-controls`);
+        const jumpDiv = document.getElementById(`bga-jump-to_controls`);
         jumpDiv.style.marginTop = `-${Math.round(jumpDiv.getBoundingClientRect().height / 2)}px`;
     }
     
     private jumpToggle(): void {
-        const jumpControls = document.getElementById('bga-jump-to-controls');
+        const jumpControls = document.getElementById('bga-jump-to_controls');
         jumpControls.classList.toggle('folded');
         if (this.settings?.localStorageFoldedKey) {
             localStorage.setItem(this.settings.localStorageFoldedKey, jumpControls.classList.contains('folded').toString());
@@ -150,6 +176,7 @@ class JumpToManager {
         return orderedPlayers.map(player => new JumpToEntry(player.name, `player-table-${player.id}`, {
             'color': '#'+player.color,
             'colorback': player.color_back ? '#'+player.color_back : null,
+            'id': player.id,
         }));
     }
 }
