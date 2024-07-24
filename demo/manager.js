@@ -38,10 +38,17 @@ function initManager() {
         `);
     }
 
+    document.getElementById(`game_play_area_wrap`).insertAdjacentHTML('beforeend', `
+        <div id="rules-notice" class="player-table">A probably not very useful information</div>
+    `);
+
     jumpToManager = new JumpToManager(game, {
         localStorageFoldedKey: LOCAL_STORAGE_JUMP_TO_FOLDED_KEY,
         topEntries: [
             new JumpToEntry(_('Main board'), 'main-board', { 'color': 'darkgray' })
+        ],
+        bottomEntries: [
+            new JumpToEntry(_('Rules notice'), 'rules-notice', { 'color': 'lightgray' })
         ],
         entryClasses: 'round-point',
     });

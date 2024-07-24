@@ -34,12 +34,12 @@ var JumpToEntry = /** @class */ (function () {
 }());
 var JumpToManager = /** @class */ (function () {
     function JumpToManager(game, settings) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         this.game = game;
         this.settings = settings;
-        var entries = __spreadArray(__spreadArray([], ((_a = settings === null || settings === void 0 ? void 0 : settings.topEntries) !== null && _a !== void 0 ? _a : []), true), ((_b = settings === null || settings === void 0 ? void 0 : settings.playersEntries) !== null && _b !== void 0 ? _b : this.createEntries(Object.values(game.gamedatas.players))), true);
+        var entries = __spreadArray(__spreadArray(__spreadArray([], ((_a = settings === null || settings === void 0 ? void 0 : settings.topEntries) !== null && _a !== void 0 ? _a : []), true), ((_b = settings === null || settings === void 0 ? void 0 : settings.playersEntries) !== null && _b !== void 0 ? _b : this.createEntries(Object.values(game.gamedatas.players))), true), ((_c = settings === null || settings === void 0 ? void 0 : settings.bottomEntries) !== null && _c !== void 0 ? _c : []), true);
         this.createPlayerJumps(entries);
-        var folded = (_c = settings === null || settings === void 0 ? void 0 : settings.defaultFolded) !== null && _c !== void 0 ? _c : false;
+        var folded = (_d = settings === null || settings === void 0 ? void 0 : settings.defaultFolded) !== null && _d !== void 0 ? _d : false;
         if (settings === null || settings === void 0 ? void 0 : settings.localStorageFoldedKey) {
             var localStorageValue = localStorage.getItem(settings.localStorageFoldedKey);
             if (localStorageValue) {

@@ -53,6 +53,12 @@ interface JumpToSettings {
     playersEntries?: JumpToEntry[];
 
     /**
+     * Bottom entries, usually the information panels.
+     * Default (empty)
+     */
+    bottomEntries?: JumpToEntry[];
+
+    /**
      * Classes to add to each entry. Pre-built classes are `round-point`, `hexa-point` and `triangle-point`.
      * Default (empty) is a square box
      */
@@ -89,7 +95,8 @@ class JumpToManager {
     constructor(private game: Game, private settings?: JumpToSettings) {
         const entries = [
             ...(settings?.topEntries ?? []),
-            ...(settings?.playersEntries ?? this.createEntries(Object.values((game as any).gamedatas.players)))
+            ...(settings?.playersEntries ?? this.createEntries(Object.values((game as any).gamedatas.players))),
+            ...(settings?.bottomEntries ?? []),
         ];
         this.createPlayerJumps(entries);
 
